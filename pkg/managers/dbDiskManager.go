@@ -21,7 +21,7 @@ var dbDiskManagerInstance *dbDiskManager
 func CreateDBDiskManager(dataLocation string) DBDiskManager {
 	sync.OnceFunc(func() {
 		dbDiskManagerInstance = &dbDiskManager{dataLocation: dataLocation}
-	})
+	})()
 	return dbDiskManagerInstance
 }
 

@@ -26,7 +26,7 @@ var formatDiskManagerInstance *formatDiskManager
 func CreateFormatDiskManager(dataLocation string) FormatDiskManager {
 	sync.OnceFunc(func() {
 		formatDiskManagerInstance = &formatDiskManager{dataLocation: dataLocation}
-	})
+	})()
 	return formatDiskManagerInstance
 }
 

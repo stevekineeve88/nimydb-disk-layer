@@ -27,7 +27,7 @@ func GetDirectoryContents(directory string) ([]string, error) {
 func CreateFile(filePath string) error {
 	file, err := os.Create(filePath)
 	if err != nil {
-		return err
+		return nil
 	}
 	defer file.Close()
 	return nil
@@ -39,4 +39,8 @@ func WriteFile(filePath string, fileData []byte) error {
 
 func GetFile(filePath string) ([]byte, error) {
 	return os.ReadFile(filePath)
+}
+
+func DeleteFile(filePath string) error {
+	return os.Remove(filePath)
 }

@@ -21,7 +21,7 @@ var blobDiskManagerInstance *blobDiskManager
 func CreateBlobDiskManager(dataLocation string) BlobDiskManager {
 	sync.OnceFunc(func() {
 		blobDiskManagerInstance = &blobDiskManager{dataLocation: dataLocation}
-	})
+	})()
 	return blobDiskManagerInstance
 }
 

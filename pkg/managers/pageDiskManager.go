@@ -20,7 +20,7 @@ type PageDiskManager interface {
 	GetAll(db string, blob string) (models.Pages, error)
 	GetData(db string, blob string, pageFileName string) (models.PageRecords, error)
 	WriteData(db string, blob string, pageFileName string, data models.PageRecords) error
-	Delete(db string, blob string, pageFileName string) error
+	Delete(db string, blob string, pageFileName string) (bool, error)
 }
 
 type pageDiskManager struct {
@@ -32,7 +32,7 @@ var pageDiskManagerInstance *pageDiskManager
 func CreatePageDiskManager(dataLocation string) PageDiskManager {
 	sync.OnceFunc(func() {
 		pageDiskManagerInstance = &pageDiskManager{dataLocation: dataLocation}
-	})
+	})()
 	return pageDiskManagerInstance
 }
 
@@ -42,11 +42,8 @@ func (pdm *pageDiskManager) Initialize(db string, blob string) error {
 		return err
 	}
 
-	var pages models.Pages
-	pagesData, err := json.Marshal(pages)
-	if err != nil {
-		return err
-	}
+	pages := models.Pages{}
+	pagesData, _ := json.Marshal(pages)
 	if err := utils.WriteFile(pagesFilePath, pagesData); err != nil {
 		return nil
 	}
@@ -63,12 +60,12 @@ func (pdm *pageDiskManager) Create(db string, blob string) (string, error) {
 	var pageRecords models.PageRecords
 	pageRecordsData, _ := json.Marshal(pageRecords)
 	if err := utils.WriteFile(newPageFilePath, pageRecordsData); err != nil {
-		return "", err
+		return newPageFile, err
 	}
 
 	pages, err := pdm.GetAll(db, blob)
 	if err != nil {
-		return "", err
+		return newPageFile, err
 	}
 	pages = append(pages, models.PageItem{FileName: newPageFile})
 	pagesData, _ := json.Marshal(pages)
@@ -106,9 +103,30 @@ func (pdm *pageDiskManager) WriteData(db string, blob string, pageFileName strin
 	return utils.WriteFile(fmt.Sprintf("%s/%s", pdm.getPagesDirectoryName(db, blob), pageFileName), dataBytes)
 }
 
-func (pdm *pageDiskManager) Delete(db string, blob string, pageFileName string) error {
-	//TODO: FINISH THIS!!!
-	return nil
+func (pdm *pageDiskManager) Delete(db string, blob string, pageFileName string) (bool, error) {
+	err := utils.DeleteFile(fmt.Sprintf("%s/%s", pdm.getPagesDirectoryName(db, blob), pageFileName))
+	if err != nil {
+		return false, err
+	}
+
+	pages, err := pdm.GetAll(db, blob)
+	if err != nil {
+		return true, err
+	}
+	for i := 0; i < len(pages); i++ {
+		if pages[i].FileName == pageFileName {
+			copy(pages[i:], pages[i+1:])
+			pages[len(pages)-1] = models.PageItem{}
+			pages = pages[:len(pages)-1]
+			pagesData, _ := json.Marshal(pages)
+			err = utils.WriteFile(pdm.getPagesFileName(db, blob), pagesData)
+			if err != nil {
+				return true, err
+			}
+			return true, nil
+		}
+	}
+	return true, nil
 }
 
 func (pdm *pageDiskManager) getPagesFileName(db string, blob string) string {
