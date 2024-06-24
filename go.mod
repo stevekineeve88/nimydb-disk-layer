@@ -1,4 +1,4 @@
-module github.com/stevekineeve88/nimydb-disk-layer.git
+module github.com/stevekineeve88/nimydb-disk-layer
 
 go 1.21
 

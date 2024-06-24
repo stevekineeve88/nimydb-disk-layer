@@ -3,8 +3,8 @@ package managers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stevekineeve88/nimydb-disk-layer.git/pkg/models"
-	"github.com/stevekineeve88/nimydb-disk-layer.git/pkg/utils"
+	"github.com/stevekineeve88/nimydb-disk-layer/pkg/models"
+	"github.com/stevekineeve88/nimydb-disk-layer/pkg/utils"
 	"sync"
 )
 

@@ -2,7 +2,7 @@ package managers
 
 import (
 	"fmt"
-	"github.com/stevekineeve88/nimydb-disk-layer.git/pkg/utils"
+	"github.com/stevekineeve88/nimydb-disk-layer/pkg/utils"
 	"sync"
 )
 

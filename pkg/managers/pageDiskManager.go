@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/stevekineeve88/nimydb-disk-layer.git/pkg/models"
-	"github.com/stevekineeve88/nimydb-disk-layer.git/pkg/utils"
+	"github.com/stevekineeve88/nimydb-disk-layer/pkg/models"
+	"github.com/stevekineeve88/nimydb-disk-layer/pkg/utils"
 	"sync"
 )
 
